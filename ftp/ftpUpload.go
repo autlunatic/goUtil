@@ -33,10 +33,12 @@ func UploadFile(c UploadConf) (err error) {
 	//fmt.Println("Logged In")
 
 	//var curPath string
-	if _, err := ftp.Pwd(); err != nil {
-		return err
+	if c.RemotePath != "" {
+		err = ftp.Cwd(c.RemotePath)
+		if err != nil {
+			return err
+		}
 	}
-	ftp.Cwd(c.RemotePath)
 	//fmt.Printf("Current path: %s \n", curPath)
 
 	var file *os.File
