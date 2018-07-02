@@ -4,8 +4,10 @@ import (
 	"archive/zip"
 	"io"
 	"os"
+	"time"
 )
 
+// ZipFiles packs all files in the slice in one zip named filename
 func ZipFiles(filename string, files []string) error {
 
 	newFile, err := os.Create(filename)
@@ -40,6 +42,11 @@ func ZipFiles(filename string, files []string) error {
 		// Change to deflate to gain better compression
 		// see http://golang.org/pkg/archive/zip/#pkg-constants
 		header.Method = zip.Deflate
+		location := time.FixedZone(time.Now().Local().Zone())
+		if err != nil {
+			return err
+		}
+		header.Modified = header.ModTime().In(location)
 
 		writer, err := zipWriter.CreateHeader(header)
 		if err != nil {
